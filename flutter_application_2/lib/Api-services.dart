@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_application_1/api.dart';
+import 'package:flutter_application_1/main.dart';
 import 'package:http/http.dart' as http;
 
 class ApiServices {
@@ -16,6 +17,7 @@ class ApiServices {
 
   // Fetch all tasks.
   // List<taskApiModel> responseData = [];
+  static int lengthOfResponseData = 0;
 
   Future<List<dynamic>> gettasks() async {
     var url = Uri.parse("$baseUrl/tasks");
@@ -27,7 +29,7 @@ class ApiServices {
     // for (var eachMap in responsebody) {
     //   responseData.add(taskApiModel.fromJson(eachMap));
     // }
-
+    lengthOfResponseData = responsebody.length;
     return responsebody;
   }
 
@@ -35,4 +37,6 @@ class ApiServices {
     var url = Uri.parse("$baseUrl/tasks/$id");
     await http.delete(url, headers: _headers());
   }
+
+  
 }

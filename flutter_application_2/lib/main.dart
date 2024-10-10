@@ -1,162 +1,4 @@
-// import 'dart:convert';
-
-// import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
-
-// void main(List<String> args) {
-//   runApp(MyApp());
-// }
-
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: ProjectListScreen(),
-//     );
-//   }
-// }
-
-// class TodoistApiService {
-//   final String _apiToken = '92597cf179f1f165cd93b7501d1114e956408ea5'; // Your API token here
-//   final String _baseUrl = 'https://api.todoist.com/rest/v2';
-
-//   Map<String, String> _headers() {
-//     return {
-//       'Authorization': 'Bearer $_apiToken',
-//       'Content-Type': 'application/json',
-//     };
-//   }
-
-//   // Fetch all projects
-//   Future<List<dynamic>> getProjects() async {
-//     var url = Uri.parse('$_baseUrl/projects');
-//     var response = await http.get(url , headers: _headers());
-//     var responsebody = jsonDecode(response.body);
-//     return responsebody;
-//   }
-
-//   // Fetch tasks for a specific project
-//   Future<List<dynamic>> getTasks(String projectId) async {
-//     var url = Uri.parse('$_baseUrl/tasks?project_id=$projectId');
-//     var response = await http.get(url, headers: _headers());
-//     var responsebody = jsonDecode(response.body);
-//     return responsebody;
-//   }
-// }
-
-// class ProjectListScreen extends StatefulWidget {
-//   @override
-//   _ProjectListScreenState createState() => _ProjectListScreenState();
-// }
-
-// class _ProjectListScreenState extends State<ProjectListScreen> {
-//   final TodoistApiService apiService = TodoistApiService();
-//   List<dynamic> projects = [];
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     fetchProjects();
-//   }
-
-//   Future<void> fetchProjects() async {
-//     try {
-//       final projectList = await apiService.getProjects();
-//       setState(() {
-//         projects = projectList;
-//       });
-//     } catch (e) {
-//       print('Error fetching projects: $e');
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Todoist Projects'),
-//       ),
-//       body: projects.isEmpty
-//           ? Center(child: CircularProgressIndicator())
-//           : ListView.builder(
-//               itemCount: projects.length,
-//               itemBuilder: (context, index) {
-//                 final project = projects[index];
-//                 return ListTile(
-//                   title: Text(project['name']),
-//                   onTap: () {
-//                     // Navigate to the Task screen when a project is tapped
-//                     Navigator.push(
-//                       context,
-//                       MaterialPageRoute(
-//                         builder: (context) =>
-//                             TaskListScreen(projectId: project['id'].toString(), projectName: project['name']),
-//                       ),
-//                     );
-//                   },
-//                 );
-//               },
-//             ),
-//     );
-//   }
-// }
-
-// class TaskListScreen extends StatefulWidget {
-//   final String projectId;
-//   final String projectName;
-
-//   TaskListScreen({required this.projectId, required this.projectName});
-
-//   @override
-//   _TaskListScreenState createState() => _TaskListScreenState();
-// }
-
-// class _TaskListScreenState extends State<TaskListScreen> {
-//   final TodoistApiService apiService = TodoistApiService();
-//   List<dynamic> tasks = [];
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     fetchTasks();
-//   }
-
-//   Future<void> fetchTasks() async {
-//     try {
-//       final taskList = await apiService.getTasks(widget.projectId);
-//       setState(() {
-//         tasks = taskList;
-//       });
-//     } catch (e) {
-//       print('Error fetching tasks: $e');
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Tasks for ${widget.projectName}'),
-//       ),
-//       body: tasks.isEmpty
-//           ? Center(child: CircularProgressIndicator())
-//           : ListView.builder(
-//               itemCount: tasks.length,
-//               itemBuilder: (context, index) {
-//                 final task = tasks[index];
-//                 return ListTile(
-//                   title: Text(task['content']),
-//                 );
-//               },
-//             ),
-//     );
-//   }
-// }
-
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Api-services.dart';
 import 'package:flutter_application_1/api.dart';
@@ -189,6 +31,53 @@ class apiData extends StatefulWidget {
 class apiDataState extends State<apiData> {
   TextEditingController addtitle = TextEditingController();
   TextEditingController adddesc = TextEditingController();
+  TextEditingController updatetitle = TextEditingController();
+  TextEditingController updateesc = TextEditingController();
+  final String baseUrl = "https://api.todoist.com/rest/v2";
+  final String apiToken = "92597cf179f1f165cd93b7501d1114e956408ea5";
+  Map<String, String> _headers() {
+    return {
+      'Authorization': 'Bearer $apiToken',
+      'Content-Type': 'application/json',
+    };
+  }
+
+  addtasks() async {
+    var url = Uri.parse("$baseUrl/tasks");
+    await http.post(
+      url,
+      headers: _headers(),
+      body: jsonEncode(
+        {
+          'content': addtitle.text,
+          'description': adddesc.text,
+          'created_at': "2024:10:02",
+          'due': {'date': "2024:11:11"}
+        },
+      ),
+    );
+    adddesc.clear();
+    addtitle.clear();
+  }
+
+  updatetasks(String id) async {
+    var url = Uri.parse("$baseUrl/tasks/$id");
+    var response = await http.put(
+      url,
+      headers: _headers(),
+      body: jsonEncode(
+        {
+          'content': updatetitle.text,
+          'description': updateesc.text,
+          'created_at': "2024:10:02",
+        },
+      ),
+    );
+    print(response);
+    updatetitle.clear();
+    updateesc.clear();
+  }
+
   trimTaskName(String content) {
     int trimIndex = content.indexOf('[');
 
@@ -271,8 +160,8 @@ class apiDataState extends State<apiData> {
                   ),
                 ),
                 Expanded(child: Container()),
-                Badge(
-                  label: Text("54"),
+                const Badge(
+                  label: Text("45"),
                 )
               ],
             ),
@@ -294,7 +183,7 @@ class apiDataState extends State<apiData> {
                             borderRadius: BorderRadius.circular(20),
                             child: Container(
                               width: double.infinity,
-                              height: 100,
+                              height: 121,
                               color: const Color.fromARGB(255, 255, 250, 234),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -305,7 +194,7 @@ class apiDataState extends State<apiData> {
                                           await ApiServices().deletetasks(data['id'] ?? "0");
                                           setState(() {});
                                         },
-                                        icon: Icon(Iconsax.trash4)),
+                                        icon: const Icon(Iconsax.trash4)),
                                     title: Text(
                                       trimTaskName(data['content'] ?? "No Title"),
                                       style: const TextStyle(
@@ -334,12 +223,96 @@ class apiDataState extends State<apiData> {
                                             style: TextStyle(fontFamily: "afac", fontSize: 15, color: Colors.black),
                                             children: [
                                               TextSpan(
+                                                // 2024-10-02
                                                 text: data['created_at'].toString().substring(0, 10),
                                                 style: TextStyle(fontFamily: "afac", fontSize: 15, color: Colors.red),
                                               ),
                                             ],
                                           ),
                                         ),
+                                        IconButton(
+                                            onPressed: () {
+                                              // await updatetasks(snapshot.data?[index] ?? "0");
+                                              // setState(() {
+
+                                              // });
+                                              updatetitle.text = data['content'];
+                                              updateesc.text = data['description'];
+
+                                              showDialog(
+                                                context: context,
+                                                builder: (BuildContext) {
+                                                  return AlertDialog(
+                                                    title: const Text(
+                                                      "Update Task",
+                                                      style: TextStyle(
+                                                        fontFamily: "afac",
+                                                        fontSize: 20,
+                                                        fontWeight: FontWeight.w700,
+                                                      ),
+                                                    ),
+                                                    content: Column(
+                                                      mainAxisSize: MainAxisSize.min,
+                                                      children: [
+                                                        TextFormField(
+                                                          controller: updatetitle,
+                                                          decoration: const InputDecoration(
+                                                            label: Text("Title"),
+                                                            border: OutlineInputBorder(
+                                                              borderRadius: BorderRadius.all(
+                                                                Radius.circular(10),
+                                                              ),
+                                                              borderSide: BorderSide(
+                                                                color: Colors.black,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 20,
+                                                        ),
+                                                        TextFormField(
+                                                          controller: updateesc,
+                                                          decoration: const InputDecoration(
+                                                            label: Text("Description"),
+                                                            border: OutlineInputBorder(
+                                                              borderRadius: BorderRadius.all(
+                                                                Radius.circular(10),
+                                                              ),
+                                                              borderSide: BorderSide(
+                                                                color: Colors.black,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    actions: [
+                                                      ElevatedButton(
+                                                        onPressed: () async {
+                                                          await updatetasks(data['id'] ?? "0");
+                                                          setState(() {});
+
+                                                          Navigator.pop(context);
+                                                        },
+                                                        child: const Text(
+                                                          "Update Task",
+                                                          style: TextStyle(
+                                                            fontFamily: "afac",
+                                                            fontSize: 15,
+                                                            fontWeight: FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            },
+                                            icon: const Icon(
+                                              Iconsax.edit,
+                                              size: 20,
+                                            )),
                                         Expanded(child: Container()),
                                         Row(
                                           children: [
@@ -375,19 +348,74 @@ class apiDataState extends State<apiData> {
         backgroundColor: const Color(0xffB3261D),
         onPressed: () {
           showDialog(
-              context: context,
-              builder: (BuildContext) {
-                return AlertDialog(
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextFormField(
-                        controller: addtitle,
-                      )
-                    ],
+            context: context,
+            builder: (BuildContext) {
+              return AlertDialog(
+                title: const Text(
+                  "Add Task",
+                  style: TextStyle(
+                    fontFamily: "afac",
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
                   ),
-                );
-              });
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextFormField(
+                      controller: addtitle,
+                      decoration: const InputDecoration(
+                        label: Text("Title"),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                          borderSide: BorderSide(
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    TextFormField(
+                      controller: adddesc,
+                      decoration: const InputDecoration(
+                        label: Text("Description"),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                          borderSide: BorderSide(
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                actions: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      await addtasks();
+                      setState(() {});
+
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      "Create Task",
+                      style: TextStyle(
+                        fontFamily: "afac",
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                ],
+              );
+            },
+          );
         },
         child: const Icon(
           Iconsax.pen_add,
