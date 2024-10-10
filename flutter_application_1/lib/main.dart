@@ -201,15 +201,54 @@ class apiDataState extends State<apiData> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
         appBar: PreferredSize(
-            preferredSize: Size.fromHeight(50),
-            child: Padding(
-              padding: EdgeInsets.only(top: 50, left: 20),
-              child: Row(
-                children: [Text("Hi! Shaheer Ahmed")],
-              ),
-            )),
-        body: Column());
+          preferredSize: const Size.fromHeight(70),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
+            child: Row(
+              children: [
+                const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Hi! Shaheer Ahmed",
+                      style: TextStyle(
+                        fontFamily: "afac",
+                        fontWeight: FontWeight.w500,
+                        fontSize: 20,
+                      ),
+                    ),
+                    Text(
+                      "Welcome to your desk.",
+                      style: TextStyle(
+                        fontFamily: "afac",
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+                Expanded(child: Container()),
+                Container(
+                  height: 70,
+                  width: 70,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(
+                        "https://shorturl.at/zJTbV",
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        body: Column(
+          
+        ));
   }
 }
