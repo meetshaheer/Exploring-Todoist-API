@@ -208,6 +208,7 @@ class apiDataState extends State<apiData> {
   @override
   @override
   Widget build(BuildContext context) {
+    var count = ApiServices().gettasks();
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 230, 244, 255),
       appBar: PreferredSize(
@@ -270,8 +271,8 @@ class apiDataState extends State<apiData> {
                   ),
                 ),
                 Expanded(child: Container()),
-                const Badge(
-                  label: Text("98"),
+                Badge(
+                  label: Text("54"),
                 )
               ],
             ),
