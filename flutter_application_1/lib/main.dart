@@ -202,53 +202,132 @@ class apiDataState extends State<apiData> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(70),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
-            child: Row(
-              children: [
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Hi Shaheer Ahmed",
-                      style: TextStyle(
-                        fontFamily: "afac",
-                        fontWeight: FontWeight.w500,
-                        fontSize: 20,
-                      ),
+      backgroundColor: const Color.fromARGB(255, 230, 244, 255),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(70),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
+          child: Row(
+            children: [
+              const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Hi! Shaheer Ahmed",
+                    style: TextStyle(
+                      fontFamily: "afac",
+                      fontWeight: FontWeight.w500,
+                      fontSize: 20,
                     ),
-                    Text(
-                      "Welcome to your desk.",
-                      style: TextStyle(
-                        fontFamily: "afac",
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                      ),
+                  ),
+                  Text(
+                    "Welcome to your desk.",
+                    style: TextStyle(
+                      fontFamily: "afac",
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
                     ),
-                  ],
-                ),
-                Expanded(child: Container()),
-                Container(
-                  height: 70,
-                  width: 70,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(
-                        "https://shorturl.at/zJTbV",
-                      ),
+                  ),
+                ],
+              ),
+              Expanded(child: Container()),
+              Container(
+                height: 70,
+                width: 70,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: NetworkImage(
+                      "https://shorturl.at/zJTbV",
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-        body: Column(
-
-        ));
+      ),
+      body: Padding(
+        padding: EdgeInsets.only(top: 30, right: 20, left: 20),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                const Text(
+                  "My Inbox!",
+                  style: TextStyle(
+                    fontFamily: "afac",
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18,
+                  ),
+                ),
+                Expanded(child: Container()),
+                const Badge(
+                  label: Text("98"),
+                )
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Container(
+                width: double.infinity,
+                height: 100,
+                color: const Color.fromARGB(255, 255, 250, 234),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ListTile(
+                      title: Text(
+                        "Connect my work calendar to Todoist",
+                        style: TextStyle(fontFamily: "afac", fontSize: 18),
+                      ),
+                      subtitle: Text(
+                        "Connect my work calendar to Todoist",
+                        style: TextStyle(fontFamily: "afac", fontSize: 15),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15, top: 1, right: 15),
+                      child: Row(
+                        children: [
+                          RichText(
+                            text: const TextSpan(
+                              text: "Created At: ",
+                              style: TextStyle(fontFamily: "afac", fontSize: 15, color: Colors.black),
+                              children: [
+                                TextSpan(
+                                  text: "20-1-2024",
+                                  style: TextStyle(fontFamily: "afac", fontSize: 15, color: Colors.red),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(child: Container()),
+                          const Row(
+                            children: [
+                              Text(
+                                "Due At: ",
+                                style: TextStyle(fontFamily: "afac", fontSize: 15, color: Colors.black),
+                              ),
+                              Badge(
+                                label: Text("No Due "),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
