@@ -49,7 +49,6 @@ class taskApiModel {
     commentCount = json['comment_count'];
     creatorId = json['creator_id'];
     createdAt = json['created_at'];
-    due = json['due'];
     url = json['url'];
     duration = json['duration'];
     deadline = json['deadline'];

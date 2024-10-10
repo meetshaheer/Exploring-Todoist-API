@@ -4,7 +4,7 @@ import 'package:flutter_application_1/api.dart';
 import 'package:http/http.dart' as http;
 
 class ApiServices {
-  final String baseUrl = "https://api.todoist.com/rest/v2/projects";
+  final String baseUrl = "https://api.todoist.com/rest/v2";
   final String apiToken = "92597cf179f1f165cd93b7501d1114e956408ea5";
 
   Map<String, String> _headers() {
@@ -15,17 +15,24 @@ class ApiServices {
   }
 
   // Fetch all tasks.
+  // List<taskApiModel> responseData = [];
 
-  Future<List<taskApiModel>> gettasks() async {
-    List<taskApiModel> responseData = [];
+  Future<List<dynamic>> gettasks() async {
     var url = Uri.parse("$baseUrl/tasks");
-    var response = await http.get(url);
+    var response = await http.get(url, headers: _headers());
 
     var responsebody = jsonDecode(response.body);
+    // print(responsebody);
+    // responseData.clear();
+    // for (var eachMap in responsebody) {
+    //   responseData.add(taskApiModel.fromJson(eachMap));
+    // }
 
-    for (var eachMap in responsebody) {
-      responseData.add(eachMap);
-    }
-    return responseData;
+    return responsebody;
+  }
+
+  deletetasks(String id) async {
+    var url = Uri.parse("$baseUrl/tasks/$id");
+    await http.delete(url, headers: _headers());
   }
 }

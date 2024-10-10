@@ -158,8 +158,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Api-services.dart';
 import 'package:flutter_application_1/api.dart';
 import 'package:http/http.dart' as http;
+import 'package:iconsax/iconsax.dart';
 
 void main() {
   runApp(myApp());
@@ -185,6 +187,8 @@ class apiData extends StatefulWidget {
 }
 
 class apiDataState extends State<apiData> {
+  TextEditingController addtitle = TextEditingController();
+  TextEditingController adddesc = TextEditingController();
   trimTaskName(String content) {
     int trimIndex = content.indexOf('[');
 
@@ -194,6 +198,12 @@ class apiDataState extends State<apiData> {
 
     return content.substring(0, trimIndex);
   }
+
+  @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   ApiServices().gettasks();
+  // }
 
   @override
   @override
@@ -268,61 +278,119 @@ class apiDataState extends State<apiData> {
             const SizedBox(
               height: 10,
             ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Container(
-                width: double.infinity,
-                height: 100,
-                color: const Color.fromARGB(255, 255, 250, 234),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const ListTile(
-                      title: Text(
-                        "Connect my work calendar to Todoist",
-                        style: TextStyle(fontFamily: "afac", fontSize: 18),
-                      ),
-                      subtitle: Text(
-                        "Connect my work calendar to Todoist",
-                        style: TextStyle(fontFamily: "afac", fontSize: 15),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15, top: 1, right: 15),
-                      child: Row(
-                        children: [
-                          RichText(
-                            text: const TextSpan(
-                              text: "Created At: ",
-                              style: TextStyle(fontFamily: "afac", fontSize: 15, color: Colors.black),
-                              children: [
-                                TextSpan(
-                                  text: "20-1-2024",
-                                  style: TextStyle(fontFamily: "afac", fontSize: 15, color: Colors.red),
-                                ),
-                              ],
+            Expanded(
+              child: FutureBuilder(
+                future: ApiServices().gettasks(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView.builder(
+                      itemCount: snapshot.data?.length,
+                      itemBuilder: (context, index) {
+                        var data = snapshot.data?[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Container(
+                              width: double.infinity,
+                              height: 100,
+                              color: const Color.fromARGB(255, 255, 250, 234),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ListTile(
+                                    trailing: IconButton(
+                                        onPressed: () async {
+                                          await ApiServices().deletetasks(data['id'] ?? "0");
+                                          setState(() {});
+                                        },
+                                        icon: Icon(Iconsax.trash4)),
+                                    title: Text(
+                                      trimTaskName(data['content'] ?? "No Title"),
+                                      style: const TextStyle(
+                                        overflow: TextOverflow.ellipsis,
+                                        fontFamily: "afac",
+                                        fontSize: 18,
+                                      ),
+                                      softWrap: true,
+                                      maxLines: 1,
+                                    ),
+                                    subtitle: Text(
+                                      data['description'] ?? "No description",
+                                      style: const TextStyle(
+                                          fontFamily: "afac", fontSize: 15, overflow: TextOverflow.ellipsis),
+                                      softWrap: true,
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15, top: 1, right: 15),
+                                    child: Row(
+                                      children: [
+                                        RichText(
+                                          text: TextSpan(
+                                            text: "Created At: ",
+                                            style: TextStyle(fontFamily: "afac", fontSize: 15, color: Colors.black),
+                                            children: [
+                                              TextSpan(
+                                                text: data['created_at'].toString().substring(0, 10),
+                                                style: TextStyle(fontFamily: "afac", fontSize: 15, color: Colors.red),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(child: Container()),
+                                        Row(
+                                          children: [
+                                            const Text(
+                                              "Due At: ",
+                                              style: TextStyle(fontFamily: "afac", fontSize: 15, color: Colors.black),
+                                            ),
+                                            Badge(
+                                              label:
+                                                  Text(data?['due']?['date'].toString().substring(0, 10) ?? "No Due"),
+                                            )
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
-                          Expanded(child: Container()),
-                          const Row(
-                            children: [
-                              Text(
-                                "Due At: ",
-                                style: TextStyle(fontFamily: "afac", fontSize: 15, color: Colors.black),
-                              ),
-                              Badge(
-                                label: Text("No Due "),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                        );
+                      },
+                    );
+                  }
+                  return const Center(child: CircularProgressIndicator());
+                },
               ),
             )
           ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xffB3261D),
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (BuildContext) {
+                return AlertDialog(
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextFormField(
+                        controller: addtitle,
+                      )
+                    ],
+                  ),
+                );
+              });
+        },
+        child: const Icon(
+          Iconsax.pen_add,
+          color: Colors.white,
         ),
       ),
     );
