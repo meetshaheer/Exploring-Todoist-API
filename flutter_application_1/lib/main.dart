@@ -161,7 +161,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/api.dart';
 import 'package:http/http.dart' as http;
 
-void main(List<String> args) {
+void main() {
   runApp(myApp());
 }
 
@@ -184,21 +184,18 @@ class apiData extends StatefulWidget {
   State<apiData> createState() => apiDataState();
 }
 
-List<myApi> responseData = [];
-
 class apiDataState extends State<apiData> {
-  Future<List<myApi>> getapi() async {
-    var url = Uri.parse("https://crudcrud.com/api/73d5c23b37eb4eba8ca85788b53e20e7/unicorns");
-    var response = await http.get(url);
+  trimTaskName(String content) {
+    int trimIndex = content.indexOf('[');
 
-    var responsebody = jsonDecode(response.body);
-
-    for (var eachMap in responsebody) {
-      responseData.add(myApi.fromJson(eachMap));
+    if (trimIndex == -1) {
+      return content;
     }
-    return responseData;
+
+    return content.substring(0, trimIndex);
   }
 
+  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -280,7 +277,7 @@ class apiDataState extends State<apiData> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ListTile(
+                    const ListTile(
                       title: Text(
                         "Connect my work calendar to Todoist",
                         style: TextStyle(fontFamily: "afac", fontSize: 18),
