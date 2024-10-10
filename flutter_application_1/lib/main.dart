@@ -212,7 +212,7 @@ class apiDataState extends State<apiData> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Hi! Shaheer Ahmed",
+                      "Hi Shaheer Ahmed",
                       style: TextStyle(
                         fontFamily: "afac",
                         fontWeight: FontWeight.w500,
@@ -248,7 +248,7 @@ class apiDataState extends State<apiData> {
           ),
         ),
         body: Column(
-          
+
         ));
   }
 }
