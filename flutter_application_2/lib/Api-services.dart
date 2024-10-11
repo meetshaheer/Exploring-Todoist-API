@@ -53,8 +53,7 @@ class ApiServices {
         {
           'content': addtitle.text,
           'description': adddesc.text,
-          'created_at': "2024:10:02",
-          'due': {'date': "2024:11:11"}
+          'due': {'date': "${DateTime.now()}"}
         },
       ),
     );
@@ -75,6 +74,7 @@ class ApiServices {
         {
           'content': updatetitle.text,
           'description': updateesc.text,
+          'due': {'date': "2024:10:20"}
         },
       ),
     );
