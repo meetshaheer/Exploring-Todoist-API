@@ -29,75 +29,6 @@ class apiData extends StatefulWidget {
 }
 
 class apiDataState extends State<apiData> {
-  TextEditingController addtitle = TextEditingController();
-  TextEditingController adddesc = TextEditingController();
-  TextEditingController updatetitle = TextEditingController();
-  TextEditingController updateesc = TextEditingController();
-  final String baseUrl = "https://api.todoist.com/rest/v2";
-  final String apiToken = "92597cf179f1f165cd93b7501d1114e956408ea5";
-  Map<String, String> _headers() {
-    return {
-      'Authorization': 'Bearer $apiToken',
-      'Content-Type': 'application/json',
-    };
-  }
-
-  addtasks() async {
-    var url = Uri.parse("$baseUrl/tasks");
-    await http.post(
-      url,
-      headers: _headers(),
-      body: jsonEncode(
-        {
-          'content': addtitle.text,
-          'description': adddesc.text,
-          'created_at': "2024:10:02",
-          'due': {'date': "2024:11:11"}
-        },
-      ),
-    );
-    adddesc.clear();
-    addtitle.clear();
-  }
-
-  // updatetasks(String id) async {
-  //   var url = Uri.parse("$baseUrl/tasks/$id");
-  //   var response = await http.put(
-  //     url,
-  //     headers: _headers(),
-  //     body: jsonEncode(
-  //       {
-  //         'content': updatetitle.text,
-  //         'description': updateesc.text,
-  //         'created_at': "2024:10:02",
-  //       },
-  //     ),
-  //   );
-  //   updatetitle.clear();
-  //   updateesc.clear();
-  // }
-
-  updatetasks(String id) async {
-    var url = Uri.parse("$baseUrl/tasks/$id");
-
-    var response = await http.post(
-      url,
-      headers: {
-        'Authorization': 'Bearer $apiToken',
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode(
-        {
-          'content': updatetitle.text,
-          'description': updateesc.text,
-        },
-      ),
-    );
-
-    updatetitle.clear();
-    updateesc.clear();
-  }
-
   trimTaskName(String content) {
     int trimIndex = content.indexOf('[');
 
@@ -111,13 +42,13 @@ class apiDataState extends State<apiData> {
   @override
   // void initState() {
   //   // TODO: implement initState
-  //   ApiServices().gettasks();
+  //   apiServices.gettasks();
   // }
-
+  ApiServices apiServices = ApiServices();
   @override
   @override
   Widget build(BuildContext context) {
-    var count = ApiServices().gettasks();
+    var count = apiServices.gettasks();
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 230, 244, 255),
       appBar: PreferredSize(
@@ -190,7 +121,7 @@ class apiDataState extends State<apiData> {
             ),
             Expanded(
               child: FutureBuilder(
-                future: ApiServices().gettasks(),
+                future: apiServices.gettasks(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return ListView.builder(
@@ -211,7 +142,7 @@ class apiDataState extends State<apiData> {
                                   ListTile(
                                     trailing: IconButton(
                                         onPressed: () async {
-                                          await ApiServices().deletetasks(data['id'] ?? "0");
+                                          await apiServices.deletetasks(data['id'] ?? "0");
                                           setState(() {});
                                         },
                                         icon: const Icon(Iconsax.trash4)),
@@ -256,8 +187,8 @@ class apiDataState extends State<apiData> {
                                               // setState(() {
 
                                               // });
-                                              updatetitle.text = data['content'];
-                                              updateesc.text = data['description'];
+                                              apiServices.updatetitle.text = data['content'];
+                                              apiServices.updateesc.text = data['description'];
 
                                               showDialog(
                                                 context: context,
@@ -275,7 +206,7 @@ class apiDataState extends State<apiData> {
                                                       mainAxisSize: MainAxisSize.min,
                                                       children: [
                                                         TextFormField(
-                                                          controller: updatetitle,
+                                                          controller: apiServices.updatetitle,
                                                           decoration: const InputDecoration(
                                                             label: Text("Title"),
                                                             border: OutlineInputBorder(
@@ -292,7 +223,7 @@ class apiDataState extends State<apiData> {
                                                           height: 20,
                                                         ),
                                                         TextFormField(
-                                                          controller: updateesc,
+                                                          controller: apiServices.updateesc,
                                                           decoration: const InputDecoration(
                                                             label: Text("Description"),
                                                             border: OutlineInputBorder(
@@ -311,7 +242,7 @@ class apiDataState extends State<apiData> {
                                                       ElevatedButton(
                                                         onPressed: () async {
                                                           // await updatetasks(data['id'] ?? "0", "");
-                                                          await updatetasks(data['id']);
+                                                          await apiServices.updatetasks(data['id']);
                                                           setState(() {});
 
                                                           Navigator.pop(context);
@@ -384,7 +315,7 @@ class apiDataState extends State<apiData> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     TextFormField(
-                      controller: addtitle,
+                      controller: apiServices.addtitle,
                       decoration: const InputDecoration(
                         label: Text("Title"),
                         border: OutlineInputBorder(
@@ -401,7 +332,7 @@ class apiDataState extends State<apiData> {
                       height: 20,
                     ),
                     TextFormField(
-                      controller: adddesc,
+                      controller: apiServices.adddesc,
                       decoration: const InputDecoration(
                         label: Text("Description"),
                         border: OutlineInputBorder(
@@ -419,7 +350,7 @@ class apiDataState extends State<apiData> {
                 actions: [
                   ElevatedButton(
                     onPressed: () async {
-                      await addtasks();
+                      await apiServices.addtasks();
                       setState(() {});
 
                       Navigator.pop(context);
