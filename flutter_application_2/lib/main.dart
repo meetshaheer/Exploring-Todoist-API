@@ -60,20 +60,40 @@ class apiDataState extends State<apiData> {
     addtitle.clear();
   }
 
+  // updatetasks(String id) async {
+  //   var url = Uri.parse("$baseUrl/tasks/$id");
+  //   var response = await http.put(
+  //     url,
+  //     headers: _headers(),
+  //     body: jsonEncode(
+  //       {
+  //         'content': updatetitle.text,
+  //         'description': updateesc.text,
+  //         'created_at': "2024:10:02",
+  //       },
+  //     ),
+  //   );
+  //   updatetitle.clear();
+  //   updateesc.clear();
+  // }
+
   updatetasks(String id) async {
     var url = Uri.parse("$baseUrl/tasks/$id");
-    var response = await http.put(
+
+    var response = await http.post(
       url,
-      headers: _headers(),
+      headers: {
+        'Authorization': 'Bearer $apiToken',
+        'Content-Type': 'application/json',
+      },
       body: jsonEncode(
         {
           'content': updatetitle.text,
           'description': updateesc.text,
-          'created_at': "2024:10:02",
         },
       ),
     );
-    print(response);
+
     updatetitle.clear();
     updateesc.clear();
   }
@@ -290,7 +310,8 @@ class apiDataState extends State<apiData> {
                                                     actions: [
                                                       ElevatedButton(
                                                         onPressed: () async {
-                                                          await updatetasks(data['id'] ?? "0");
+                                                          // await updatetasks(data['id'] ?? "0", "");
+                                                          await updatetasks(data['id']);
                                                           setState(() {});
 
                                                           Navigator.pop(context);
